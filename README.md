@@ -15,26 +15,26 @@ Nothing leaves your process. The compressor is BM25 over sentences with neighbou
 
 ## Results
 
-Measured on 11 Nov 2026: 50 SQuAD v1.1 questions, each with its whole Wikipedia article as the document (7k to 11k prompt tokens), three models, 750 model calls, zero errors, $3.45 in total. Every question was asked once per arm at temperature 0 and scored with SQuAD exact match and F1 against the gold answers. Prompt tokens and cost are the figures the API billed. Full table in [bench/results/latest.md](bench/results/latest.md).
+Measured on 11 Nov 2026 in two runs with different seeds: 100 SQuAD v1.1 questions, each with its whole Wikipedia article as the document (7k to 11k prompt tokens), three models, 1,500 model calls, zero errors, $6.98 in total. Every question was asked once per arm at temperature 0 and scored with SQuAD exact match and F1 against the gold answers. Prompt tokens and cost are the figures the API billed. Full tables in [bench/results/](bench/results/).
 
-Pooled over the three models (150 paired comparisons per arm, bootstrap 95% CI on the F1 difference against the uncompressed prompt):
+Pooled over both runs and the three models (297 paired comparisons per arm, bootstrap 95% CI on the F1 difference against the uncompressed prompt):
 
 | arm | prompt tokens saved | cost saved | F1 change vs full | answers worse / same / better |
 |---|---:|---:|---:|---:|
-| clean | 0.0% | 0.0% | +0.2 [0.0, +0.7] | 0 / 149 / 1 |
-| extractive 50% | 62.0% | 61.7% | +1.3 [-1.2, +4.0] | 3 / 140 / 7 |
-| extractive 30% | 74.3% | 73.9% | +1.5 [-1.2, +4.6] | 4 / 140 / 6 |
-| extractive 15% | 85.2% | 84.7% | +0.4 [-2.3, +3.3] | 6 / 136 / 8 |
+| clean | 0.0% | 0.0% | +0.5 [-0.1, +1.3] | 1 / 292 / 4 |
+| extractive 50% | 62.8% | 62.5% | +1.0 [-0.9, +3.0] | 9 / 272 / 16 |
+| extractive 30% | 74.3% | 73.9% | -0.4 [-2.4, +1.8] | 14 / 269 / 14 |
+| extractive 15% | 85.2% | 84.7% | -0.5 [-2.5, +1.5] | 15 / 264 / 18 |
 
-Per model, F1 on the full article and at 30%:
+Per model at the 50% cap (the default), F1 on the full article and compressed, both runs:
 
-| model | host | full | 30% | F1 change (95% CI) | cost per question full → 30% |
+| model | host | full | 50% | F1 change (95% CI) | cost per question full → 50% |
 |---|---|---:|---:|---:|---:|
-| dolphin-mistral-24b | Venice | 95.0 | 97.1 | +2.1 [-0.9, +7.0] | $0.00144 → $0.00037 |
-| gemma-4-26b-uncensored | Phala TEE | 84.0 | 87.4 | +3.3 [-4.0, +10.8] | $0.00107 → $0.00028 |
-| claude (sonnet 5.5) | OpenRouter | 92.3 | 91.3 | -1.0 [-3.0, 0.0] | $0.02214 → $0.00578 |
+| dolphin-mistral-24b | Venice | 95.0 / 92.1 | 95.5 / 94.9 | +0.5 / +2.7 | $0.0015 → $0.0005 |
+| gemma-4-26b-uncensored | Phala TEE | 84.0 / 88.4 | 87.6 / 87.3 | +3.6 / -1.0 | $0.0011 → $0.0004 |
+| claude (sonnet 5.5) | OpenRouter | 92.3 / 87.5 | 92.0 / 88.0 | -0.2 / +0.5 | $0.0221 → $0.0082 |
 
-Reading: at 30% the prompt is a quarter of the size and the cost a quarter of the price, and the answer quality is unchanged within the measurement (the confidence interval covers zero on every model and in the pool). The two open models answered slightly better on the compressed article, the frontier model slightly worse, neither by a significant margin. In the compression-only pass over 300 further questions (`--dry --n 300 --seed 7`) the gold answer was still present verbatim in 98.0% of the compressed articles at 15% and 98.7% at 50%.
+Reading: at the 50% cap the prompt loses 63% of its tokens and 63% of its cost, and answer quality is unchanged on every model in both runs (every interval covers zero, and the pooled point estimate is slightly positive). At 30% and 15% the saving rises to 74% and 85% and the quality cost stays inside 2.5 F1 points, with the second run's harder questions pulling the estimate just under zero. The 50% cap is what the WISPR gateway applies by default. In the compression-only pass over 300 further questions (`--dry --n 300 --seed 7`) the gold answer was still present verbatim in 98.7% of the compressed articles at 50% and 98.0% at 15%.
 
 This is one task family (span answers over long articles). Run `node bench/run.mjs --dry` on your own documents and questions before you rely on it elsewhere.
 
