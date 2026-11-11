@@ -1,0 +1,40 @@
+{
+ "stamp": "20261111-213125",
+ "n": 300,
+ "seed": 7,
+ "arms": [
+  "full",
+  "clean",
+  "x50",
+  "x30",
+  "x15"
+ ],
+ "dry": {
+  "full": {
+   "estTokens": 9688,
+   "saved": 0,
+   "retained": 1
+  },
+  "clean": {
+   "estTokens": 9688,
+   "saved": 0.000023333333333333332,
+   "retained": 1
+  },
+  "x50": {
+   "estTokens": 3555,
+   "saved": 0.6325633333333327,
+   "retained": 0.9866666666666667
+  },
+  "x30": {
+   "estTokens": 2416,
+   "saved": 0.7495866666666658,
+   "retained": 0.9833333333333333
+  },
+  "x15": {
+   "estTokens": 1318,
+   "saved": 0.8630133333333311,
+   "retained": 0.98
+  }
+ },
+ "models": {}
+}

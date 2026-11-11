@@ -1,0 +1,23 @@
+{
+  "name": "wispr-compress",
+  "version": "0.1.0",
+  "description": "Query-aware prompt compression with no model and no dependencies. Keeps the sentences that answer the question, drops the rest, reports the token savings.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": { "types": "./src/index.d.ts", "import": "./src/index.js" }
+  },
+  "bin": { "wispr-compress": "./bin/wispr-compress.js" },
+  "files": ["src", "bin", "README.md", "LICENSE"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "bench": "node bench/run.mjs",
+    "bench:dry": "node bench/run.mjs --dry"
+  },
+  "repository": { "type": "git", "url": "https://github.com/wisprxyz/wispr-compress.git" },
+  "homepage": "https://wispr.xyz",
+  "keywords": ["prompt", "compression", "llm", "context", "tokens", "bm25", "rag"]
+}

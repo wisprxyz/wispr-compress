@@ -1,0 +1,7 @@
+node_modules/
+.env
+.env.*
+*.tok
+key*
+bench/data/
+bench/results/*.rows.json
